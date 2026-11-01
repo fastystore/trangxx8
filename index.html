@@ -1,0 +1,583 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XX8 - Chuyển điểm</title>
+
+<style>
+:root {
+    --red: #ed2450;
+    --green: #42a875;
+    --ink: #173d35;
+    --line: #d9e9e1;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--ink);
+    background-color: #f8fcf9;
+
+    background-image: url("data:image/svg+xml,%3Csvg width='150' height='82' viewBox='0 0 150 82' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M-20 43 Q-5 43 4 24 T28 24 T52 24 T76 24 T100 24 T124 24 T148 24 T172 24' fill='none' stroke='%23e3f2eb' stroke-width='3'/%3E%3C/svg%3E");
+
+    background-size: 150px 82px;
+}
+
+/* KHUNG CHÍNH */
+
+.wrap {
+    width: min(780px, calc(100% - 32px));
+    margin: 26px auto;
+    padding: 24px 26px 34px;
+    background: rgba(255,255,255,.9);
+    border-radius: 12px;
+}
+
+.demo {
+    text-align: right;
+    color: #899b92;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* LOGO XX8 */
+
+.brand {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 0.85;
+    margin: 20px auto 25px;
+    user-select: none;
+}
+
+.brand-xx {
+    font-family: Impact, "Arial Black", sans-serif;
+    font-size: clamp(100px, 19vw, 170px);
+    font-weight: 1000;
+    letter-spacing: -12px;
+    color: #ed2450;
+}
+
+.brand-eight {
+    position: relative;
+    display: inline-block;
+    font-family: Impact, "Arial Black", sans-serif;
+    font-size: clamp(105px, 19vw, 175px);
+    font-weight: 1000;
+    color: #000;
+    margin-left: 8px;
+}
+
+/* NGÔI SAO TRẮNG TRONG SỐ 8 */
+
+.brand-eight::after {
+    content: "";
+    position: absolute;
+    width: 25%;
+    aspect-ratio: 1;
+    left: 47%;
+    top: 56%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    background: white;
+
+    clip-path: polygon(
+        50% 0,
+        62% 36%,
+        100% 50%,
+        62% 64%,
+        50% 100%,
+        38% 64%,
+        0 50%,
+        38% 36%
+    );
+}
+
+/* TRẠNG THÁI */
+
+.status {
+    text-align: center;
+    font-weight: 800;
+    font-size: clamp(23px, 4vw, 42px);
+    color: var(--red);
+    margin: 14px 0 10px;
+}
+
+.date {
+    text-align: center;
+    font-size: clamp(17px, 3vw, 25px);
+    margin: 0 0 26px;
+}
+
+/* CÁC Ô NHẬP THÔNG TIN */
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 4px;
+    border-top: 2px solid var(--line);
+    font-size: clamp(17px, 3vw, 25px);
+}
+
+.row-label {
+    flex: 1;
+    font-weight: 600;
+}
+
+.inline-input {
+    width: 55%;
+    padding: 10px 12px;
+    border: 2px solid #b9dfd0;
+    border-radius: 12px;
+    text-align: left;
+    font-size: inherit;
+    font-weight: 600;
+    color: var(--ink);
+    outline: none;
+    background: rgba(255,255,255,.7);
+}
+
+.inline-input:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px #42a87520;
+}
+
+.inline-input::placeholder {
+    color: #a6adb5;
+    font-weight: 400;
+}
+
+.points-input {
+    color: var(--red);
+}
+
+/* Ô TICK THẤT BẠI */
+
+.fail-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px 4px 0;
+    font-size: clamp(15px, 2.5vw, 21px);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.fail-option input {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--red);
+    cursor: pointer;
+}
+
+/* NÚT BẤM */
+
+.actions {
+    display: flex;
+    gap: 14px;
+    margin-top: 24px;
+}
+
+button {
+    flex: 1;
+    border: 0;
+    border-radius: 40px;
+    padding: 17px 22px;
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+
+.confirm {
+    color: white;
+    background: linear-gradient(180deg, #62d29a, #168b5c);
+    box-shadow: 0 12px 25px #2c8c5a38;
+}
+
+.reset {
+    color: var(--ink);
+    background: #eff9f4;
+    border: 2px solid #b9dfd0;
+}
+
+button:hover {
+    opacity: .88;
+}
+
+/* KẾT QUẢ */
+
+.result {
+    text-align: center;
+    margin: 24px auto 0;
+    padding: 18px;
+    border: 2px solid #b9dfd0;
+    border-radius: 18px;
+    background: #f4fbf7;
+}
+
+.result h2 {
+    font-size: clamp(23px, 4vw, 32px);
+    color: var(--green);
+    margin: 6px 0 16px;
+}
+
+.result p {
+    font-size: 18px;
+    margin: 9px 0;
+}
+
+.note {
+    text-align: center;
+    font-size: 12px;
+    color: #7b8c84;
+    margin-top: 20px;
+    line-height: 1.5;
+}
+
+.hidden {
+    display: none;
+}
+
+/* ĐIỆN THOẠI */
+
+@media(max-width:520px) {
+
+    .wrap {
+        padding: 22px 16px 28px;
+    }
+
+    .brand-xx {
+        letter-spacing: -8px;
+    }
+
+    .brand-eight {
+        margin-left: 5px;
+    }
+
+    .row {
+        gap: 8px;
+        padding: 16px 0;
+    }
+
+    .inline-input {
+        width: 53%;
+        padding: 9px 8px;
+    }
+
+    .actions {
+        flex-direction: column;
+    }
+}
+</style>
+</head>
+
+ <label class="fail-option" for="forceFail">
+
+        <input
+            id="forceFail"
+            type="checkbox"
+        >
+
+    </label>
+
+<body>
+
+<main class="wrap">
+
+
+    <!-- LOGO XX8 -->
+
+    <div class="brand" aria-label="XX8">
+
+        <span class="brand-xx">XX</span>
+
+        <span class="brand-eight">8</span>
+
+    </div>
+
+    <!-- TRẠNG THÁI -->
+
+    <div class="status" id="status">
+        ✕ CHƯA XÁC NHẬN
+    </div>
+
+    <p class="date" id="date"></p>
+
+    <!-- THÔNG TIN -->
+
+    <section>
+
+        <div class="row">
+
+            <label class="row-label" for="source">
+                Tài khoản nguồn:
+            </label>
+
+            <input
+                class="inline-input"
+                id="source"
+                type="text"
+                placeholder="Nhập tài khoản nguồn"
+                autocomplete="off"
+            >
+
+        </div>
+
+        <div class="row">
+
+            <label class="row-label" for="destination">
+                Tài khoản đến:
+            </label>
+
+            <input
+                class="inline-input"
+                id="destination"
+                type="text"
+                placeholder="Nhập tài khoản nhận"
+                autocomplete="off"
+            >
+
+        </div>
+
+        <div class="row">
+
+            <label class="row-label" for="points">
+                Số điểm chuyển:
+            </label>
+
+            <input
+                class="inline-input points-input"
+                id="points"
+                type="number"
+                min="1"
+                step="1"
+                placeholder="Nhập số điểm"
+            >
+
+        </div>
+
+    </section>
+
+    <!-- TICK THẤT BẠI -->
+
+   
+    <!-- NÚT CHỨC NĂNG -->
+
+    <div class="actions">
+
+        <button
+            class="confirm"
+            id="confirmBtn"
+            type="button"
+        >
+            XÁC NHẬN
+        </button>
+
+        <button
+            class="reset"
+            id="resetBtn"
+            type="button"
+        >
+            LÀM MỚI
+        </button>
+
+    </div>
+
+    <!-- KẾT QUẢ -->
+
+    <section class="result hidden" id="result">
+
+        <h2>✓ CHUYỂN THÀNH CÔNG</h2>
+
+        <p>
+            <strong>Tài khoản đến:</strong>
+            <span id="successDest">-</span>
+        </p>
+
+        <p>
+            <strong>Số điểm chuyển:</strong>
+            <span id="successPoints">-</span>
+        </p>
+
+        <p class="note">
+            Website chưa kết nối hệ thống chuyển điểm thực tế.
+        </p>
+
+    </section>
+
+
+</main>
+
+<script>
+
+// LẤY PHẦN TỬ HTML
+
+const $ = id => document.getElementById(id);
+
+
+// CẬP NHẬT NGÀY GIỜ
+
+function updateDate() {
+
+    const now = new Date();
+
+    $('date').textContent =
+        'Ngày thực hiện: ' +
+        now.toLocaleTimeString('vi-VN') + ' ' +
+        now.toLocaleDateString('vi-VN');
+
+}
+
+
+// CHỨC NĂNG LÀM MỚI
+
+function clearForm() {
+
+    // Giữ nguyên tài khoản nguồn
+
+    $('destination').value = '';
+
+    $('points').value = '';
+
+    $('forceFail').checked = false;
+
+    $('status').textContent =
+        '✕ CHƯA XÁC NHẬN';
+
+    $('status').style.color =
+        'var(--red)';
+
+    $('result').classList.add('hidden');
+
+}
+
+
+// CHỨC NĂNG XÁC NHẬN
+
+$('confirmBtn').addEventListener('click', () => {
+
+    // Lấy dữ liệu người dùng nhập
+
+    const source =
+        $('source').value.trim();
+
+    const destination =
+        $('destination').value.trim();
+
+    const points =
+        Number($('points').value);
+
+
+    // KIỂM TRA DỮ LIỆU
+
+    if (
+        !source ||
+        !destination ||
+        !Number.isInteger(points) ||
+        points <= 0
+    ) {
+
+        alert('Vui lòng nhập đầy đủ thông tin hợp lệ!');
+
+        return;
+
+    }
+
+
+    // KIỂM TRA Ô TICK
+
+    const failed =
+        $('forceFail').checked;
+
+
+    const title =
+        $('result').querySelector('h2');
+
+
+    // NẾU ĐƯỢC TICK
+
+    if (failed) {
+
+        $('status').textContent =
+            '✕ CHUYỂN THẤT BẠI';
+
+        $('status').style.color =
+            'var(--red)';
+
+        title.textContent =
+            '✕ CHUYỂN THẤT BẠI';
+
+        title.style.color =
+            'var(--red)';
+
+    }
+
+    // NẾU KHÔNG TICK
+
+    else {
+
+        $('status').textContent =
+            '✓ CHUYỂN THÀNH CÔNG';
+
+        $('status').style.color =
+            'var(--green)';
+
+        title.textContent =
+            '✓ CHUYỂN THÀNH CÔNG';
+
+        title.style.color =
+            'var(--green)';
+
+    }
+
+
+    // HIỂN THỊ KẾT QUẢ
+
+    $('successDest').textContent =
+        destination;
+
+    $('successPoints').textContent =
+        points.toLocaleString('vi-VN');
+
+
+    $('result').classList.remove('hidden');
+
+
+    // RESET HAI Ô NHẬP
+
+    // Tài khoản nguồn vẫn được giữ nguyên
+
+    $('destination').value = '';
+
+    $('points').value = '';
+
+});
+
+
+// NÚT LÀM MỚI
+
+$('resetBtn').addEventListener(
+    'click',
+    clearForm
+);
+
+
+// CHẠY NGÀY GIỜ
+
+updateDate();
+
+</script>
+
+</body>
+</html>
